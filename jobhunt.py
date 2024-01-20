@@ -7,8 +7,8 @@ user_name = input("Please enter your name for the EDD Job Hunt Log title: ")
 # Define the columns for EDD job reporting requirements
 columns = [
     'Week Ending Date', 'Employer Name', 'Type of Work Sought', 'Method of Contact',
-    'Date of Contact', 'Position Applied For', 'Contact Person', "Contact Person's Title",
-    'Contact Phone or Email', 'Result of Contact', 'Follow-up Actions Planned'
+    'Date of Contact', 'Position Applied', 'Contact Person', "Contact's Title",
+    'Howto Contact ', 'Result', 'Follow-up Actions'
 ]
 
 # Add a title to the spreadsheet using the user's name
@@ -23,14 +23,24 @@ columns_df = pd.DataFrame(columns=columns)
 edd_job_reporting_log_with_title = pd.concat([title_df, columns_df], ignore_index=True)
 
 # Save the DataFrame with the title to an Excel file
-edd_file_name_with_title = f"EDD_Job_Hunt_Log_for_{user_name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+# edd_file_name_with_title = f"EDD_Job_Hunt_Log_for_{user_name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+# with pd.ExcelWriter(edd_file_name_with_title, engine='xlsxwriter') as writer:
+#     edd_job_reporting_log_with_title.to_excel(writer, index=False, header=False, startrow=2)
+#     workbook = writer.book
+#     worksheet = writer.sheets['Sheet1']
+#     worksheet.write('A1', title)  # Write the title
+#     worksheet.set_row(0, 30)  # Set the title row height
+#     worksheet.set_row(1, 20)  # Set the columns row height
+edd_file_name_with_title = f"{user_name}_Job_Log_{current_date}.xlsx"
+
 with pd.ExcelWriter(edd_file_name_with_title, engine='xlsxwriter') as writer:
-    edd_job_reporting_log_with_title.to_excel(writer, index=False, header=False, startrow=2)
-    workbook = writer.book
-    worksheet = writer.sheets['Sheet1']
-    worksheet.write('A1', title)  # Write the title
-    worksheet.set_row(0, 30)  # Set the title row height
-    worksheet.set_row(1, 20)  # Set the columns row height
+    # Write the title in the first row
+    worksheet = writer.book.add_worksheet('Job Log')
+    writer.sheets['Job Log'] = worksheet
+    worksheet.write('A1', title)
+
+    # Write the column headers starting from the second row
+    columns_df.to_excel(writer, sheet_name='Job Log', index=False, startrow=1)
 
 print(f"Spreadsheet created: {edd_file_name_with_title}")
 
