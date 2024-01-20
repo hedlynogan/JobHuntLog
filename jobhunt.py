@@ -1,27 +1,30 @@
 import pandas as pd
 from datetime import datetime
 
-# Define the structure of the spreadsheet for EDD job reporting requirements
-# Commonly required fields may include:
+# Prompt the user for their name
+user_name = input("Please enter your name for the EDD Job Hunt Log title: ")
+
+# Define the columns for EDD job reporting requirements
 columns = [
-    'Week Ending Date',  # The last day of the job search week
-    'Employer Name',  # Name of the employer where the applicant applied or interviewed
-    'Type of Work Sought',  # The type of job the applicant is seeking
-    'Method of Contact',  # How the applicant contacted the employer (e.g., online, in-person, phone)
-    'Date of Contact',  # The date when the employer was contacted
-    'Position Applied For',  # The specific position or job title the applicant applied for
-    'Contact Person',  # Name or title of the person contacted at the employer
-    "Contact Person's Title",  # Title of the contact person
-    'Contact Phone or Email',  # Phone number or email address of the contact person
-    'Result of Contact',  # The result of the contact (e.g., interview scheduled, no response, job offer)
-    'Follow-up Actions Planned'  # Any follow-up actions the applicant intends to take
+    'Week Ending Date', 'Employer Name', 'Type of Work Sought', 'Method of Contact',
+    'Date of Contact', 'Position Applied For', 'Contact Person', "Contact Person's Title",
+    'Contact Phone or Email', 'Result of Contact', 'Follow-up Actions Planned'
 ]
 
-# Create a DataFrame with the defined columns
-edd_job_reporting_log = pd.DataFrame(columns=columns)
+# Add a title to the spreadsheet using the user's name
+title = f"EDD Job Hunt Log for {user_name}"
 
-# Save the DataFrame to an Excel file
-edd_file_name = f"EDD_Job_Reporting_Log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
-edd_job_reporting_log.to_excel(edd_file_name, index=False)
+# Create a DataFrame with the title and defined columns
+# The title will be in the first row, and the column headers will be in the second row
+edd_job_reporting_log_with_title = pd.DataFrame(columns=[''])
+edd_job_reporting_log_with_title.loc[0] = title
+edd_job_reporting_log_with_title = edd_job_reporting_log_with_title._append(pd.DataFrame(columns=columns), ignore_index=True)
 
-edd_file_name
+# Save the DataFrame with the title to an Excel file
+edd_file_name_with_title = f"EDD_Job_Hunt_Log_for_{user_name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+edd_job_reporting_log_with_title.to_excel(edd_file_name_with_title, index=False, header=False)
+
+print(f"Spreadsheet created: {edd_file_name_with_title}")
+
+
+
