@@ -1,5 +1,9 @@
 import pandas as pd
 from datetime import datetime
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font
+
+# Author: Ned Hogan 01/19/24
 
 # Prompt the user for their name
 user_name = input("Please enter your name for the EDD Job Hunt Log title: ")
@@ -22,27 +26,44 @@ title_df = pd.DataFrame({'A': [title]})
 columns_df = pd.DataFrame(columns=columns)
 edd_job_reporting_log_with_title = pd.concat([title_df, columns_df], ignore_index=True)
 
-# Save the DataFrame with the title to an Excel file
-# edd_file_name_with_title = f"EDD_Job_Hunt_Log_for_{user_name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
-# with pd.ExcelWriter(edd_file_name_with_title, engine='xlsxwriter') as writer:
-#     edd_job_reporting_log_with_title.to_excel(writer, index=False, header=False, startrow=2)
-#     workbook = writer.book
-#     worksheet = writer.sheets['Sheet1']
-#     worksheet.write('A1', title)  # Write the title
-#     worksheet.set_row(0, 30)  # Set the title row height
-#     worksheet.set_row(1, 20)  # Set the columns row height
 edd_file_name_with_title = f"{user_name}_Job_Log_{current_date}.xlsx"
 
-with pd.ExcelWriter(edd_file_name_with_title, engine='xlsxwriter') as writer:
-    # Write the title in the first row
-    worksheet = writer.book.add_worksheet('Job Log')
-    writer.sheets['Job Log'] = worksheet
-    worksheet.write('A1', title)
+# Using openpyxl for more control over the Excel file
+wb = Workbook()
+ws = wb.active
+ws.title = "Job Log"
+title_font = Font(bold=True, size=14)
+ws['A1'].font = title_font
+ws['A1'].alignment = Alignment(horizontal='center')
 
-    # Write the column headers starting from the second row
-    columns_df.to_excel(writer, sheet_name='Job Log', index=False, startrow=1)
+ws.append([title])
+ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(columns))
+ws['A1'].alignment = Alignment(horizontal='center')
 
-print(f"Spreadsheet created: {edd_file_name_with_title}")
+# Append the column headers
+ws.append(columns)
+
+# Adjust column widths based on the length of column headers
+for col, column_title in enumerate(columns, start=1):
+    ws.column_dimensions[chr(64 + col)].width = len(column_title) + 2
+
+# Save the workbook
+wb.save(filename=edd_file_name_with_title)
+
+# Output the file name
+edd_file_name_with_title
+
+
+# with pd.ExcelWriter(edd_file_name_with_title, engine='xlsxwriter') as writer:
+#     # Write the title in the first row
+#     worksheet = writer.book.add_worksheet('Job Log')
+#     writer.sheets['Job Log'] = worksheet
+#     worksheet.write('A1', title)
+#
+#     # Write the column headers starting from the second row
+#     columns_df.to_excel(writer, sheet_name='Job Log', index=False, startrow=1)
+#
+# print(f"Spreadsheet created: {edd_file_name_with_title}")
 
 # edd_job_reporting_log_with_title.loc[0] = title
 # edd_job_reporting_log_with_title = edd_job_reporting_log_with_title._append(pd.DataFrame(columns=columns), ignore_index=True)
