@@ -54,25 +54,5 @@ wb.save(filename=edd_file_name_with_title)
 edd_file_name_with_title
 
 
-# with pd.ExcelWriter(edd_file_name_with_title, engine='xlsxwriter') as writer:
-#     # Write the title in the first row
-#     worksheet = writer.book.add_worksheet('Job Log')
-#     writer.sheets['Job Log'] = worksheet
-#     worksheet.write('A1', title)
-#
-#     # Write the column headers starting from the second row
-#     columns_df.to_excel(writer, sheet_name='Job Log', index=False, startrow=1)
-#
-# print(f"Spreadsheet created: {edd_file_name_with_title}")
-
-# edd_job_reporting_log_with_title.loc[0] = title
-# edd_job_reporting_log_with_title = edd_job_reporting_log_with_title._append(pd.DataFrame(columns=columns), ignore_index=True)
-
-# Save the DataFrame with the title to an Excel file
-# edd_file_name_with_title = f"EDD_Job_Hunt_Log_for_{user_name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
-# edd_job_reporting_log_with_title.to_excel(edd_file_name_with_title, index=False, header=False)
-
-# print(f"Spreadsheet created: {edd_file_name_with_title}")
-
 
 
